@@ -31,6 +31,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 //Routes
 //Scrape article's titles and links
 app.get("/scrape", function(req, res){
+    let articleContainer = [];
   request("https://old.reddit.com/r/news/", function(error, response, html){
       let $ = cheerio.load(html);
       
@@ -49,12 +50,11 @@ app.get("/scrape", function(req, res){
               .then(function(response){
               })
               .catch(function(err){
-                  console.log(err);
+                console.log(err);
               });
               i++;
           }
       });
-    //   res.redirect('/');
   });
 });
 

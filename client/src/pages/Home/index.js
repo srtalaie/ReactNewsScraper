@@ -20,7 +20,7 @@ class Home extends Component {
 
     scrapeArticles = () => {
         API.scrapeArticles()
-        .then(res => this.setState({articles: [...this.state.articles, res.data]}))
+        .then(() => this.loadArticles)
         .catch(err => console.log(err));
     }
 
