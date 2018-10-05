@@ -13,6 +13,7 @@ class Home extends Component {
     }
 
     loadArticles = () => {
+        console.log('Running');
         API.getArticles()
         .then(res => this.setState({ articles: res.data }))
         .catch(err => console.log(err));
@@ -20,7 +21,7 @@ class Home extends Component {
 
     scrapeArticles = () => {
         API.scrapeArticles()
-        .then(() => this.loadArticles)
+        .then(res => this.setState({ articles: res.data }))
         .catch(err => console.log(err));
     }
 

@@ -35,9 +35,13 @@ app.get("/scrape", function(req, res){
   request("https://old.reddit.com/r/news/", function(error, response, html){
       let $ = cheerio.load(html);
       
+      const createPromiseArray = [];
+      // loop through our titles and push each db create into our 
+      // promise array, which we will wait on before sending back a 
+      // response to the client
       $("p.title").each(function(i = 0, element){
           //Grab 20 articles
-          if (i < 20){
+          if (i < 20) {
               let title = $(element).text();
               let link = $(element).children().attr("href");
   
@@ -46,20 +50,20 @@ app.get("/scrape", function(req, res){
                   link: `${link}`
               };
 
-              db.Article.create(article)
-              .then(function(response){
-              })
-              .catch(function(err){
-                console.log(err);
-              });
+              createPromiseArray.push(db.Article.create(article))
+
               i++;
           }
       });
+
+      Promise.all(createPromiseArray)
+        .then(results => res.json(results))
+        .catch(err => res.send(err))
   });
 });
 
 //Get articles from db and populate index page
-app.get("/", function(req, res){
+app.get("/articles", function(req, res){
   db.Article.find({}, function(err, results){
 
       let newArticlesOnly = results.reduce((unique, o) => {

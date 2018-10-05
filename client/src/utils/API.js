@@ -6,7 +6,7 @@ export default {
     },
 
     getArticles: function(){
-        return axios.get("http://localhost:3001/");
+        return axios.get("/articles");
     },
 
     saveArticle: function(id){
