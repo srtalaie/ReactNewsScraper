@@ -5,7 +5,9 @@ import "./index.css";
 
 class Home extends Component {
     state = {
-        articles: []
+        articles: [],
+        author: "",
+        body: ""
     }
     
     componentDidMount(){
@@ -13,7 +15,6 @@ class Home extends Component {
     }
 
     loadArticles = () => {
-        console.log('Running');
         API.getArticles()
         .then(res => this.setState({ articles: res.data }))
         .catch(err => console.log(err));
@@ -23,6 +24,16 @@ class Home extends Component {
         API.scrapeArticles()
         .then(res => this.setState({ articles: res.data }))
         .catch(err => console.log(err));
+    }
+
+    saveArticle = (id) => {
+        API.saveArticle(id)
+        .then(console.log('success'))
+        .catch(err => console.log(err))
+    }
+
+    addComment = (id) => {
+        API.addComment(id)
     }
 
     render(){
@@ -40,7 +51,10 @@ class Home extends Component {
                             </strong>
                             </a>
                             <button className="list-button" onClick={() => this.saveArticle(article._id)}>Save</button>
+                            <input type="text" name="author"></input>
+                            <input type="text" name="body"></input>
                             <button className="list-button" onClick={() => this.createComment(article._id)}>Add Comment</button>
+                            <button className="list-button" onClick={() => this.viewComments(article._id)}>View Comment</button>
                         </ListItem>
                         );
                     })}
