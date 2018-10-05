@@ -17,8 +17,8 @@ export default {
         return axios.get("/saved");
     },
 
-    addComment: function(id){
-        return axios.post(`/addComment/${id}`);
+    addComment: function(id, commentData){
+        return axios.post(`/addComment/${id}`, commentData);
     },
 
     getComments: function(id){
