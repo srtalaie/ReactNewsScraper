@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { List, ListItem } from "../../components/List";
 import API from "../../utils/API";
 import "./index.css";
-import CommentModal from "../../components/Comment-Modal";
 import CommentModalWrapper from "../../components/Comment-Modal/CommentModalWrapper";
 
 class Home extends Component {
@@ -23,7 +22,13 @@ class Home extends Component {
         .then(res => this.setState({ articles: res.data }))
         .catch(err => console.log(err));
     }
-    
+
+    loadComments = (id) => {
+        API.getComments(id)
+        .then(res => this.setState({ comments: res.data.comment }))
+        .catch(err => console.log(err))
+    }
+
     scrapeArticles = () => {
         API.scrapeArticles()
         .then(res => this.setState({ articles: res.data }))
@@ -50,21 +55,18 @@ class Home extends Component {
             author,
             body
         }
-        console.log(commentData);
         API.addComment(id, commentData)
-        .then(console.log("successful comment"))
+        .then(res => this.setState({ comments: res.data.comment }))
         .catch(err => console.log(err))
+        this.setState({ author: "", body: "" })
     }
 
     viewComments = (id) => {
-        API.getComments(id)
-        .then(res => this.setState({ comments: res.data }))
-        .catch(err => console.log(err))
-        this.setState({ displayState: "show" })
+        this.loadComments(id);
     }
 
     closeCommentModal = () => {
-        this.setState({ displayState: "none" })
+        this.setState({ displayState: "visibility: 'hidden'" })
     }
 
     render(){
@@ -85,21 +87,10 @@ class Home extends Component {
                             <input type="text" name="author" value={this.state.author} onChange={this.commentInputChange}></input>
                             <input type="text" name="body" value={this.state.body} onChange={this.commentInputChange}></input>
                             <button className="list-button" onClick={() => this.addComment(article._id)}>Add Comment</button>
-                            <button className="list-button" onClick={() => this.viewComments(article._id)}>View Comment</button>
+                            <button className="list-button" onClick={() => this.viewComments(article.id)}>View Comment</button>
                         </ListItem>
                         );
                     })}
-                    <CommentModalWrapper
-                        displayState = {this.state.displayState}
-                        {...this.state.comments.map((comment) => {
-                            <CommentModal
-                            body = {comment.body}
-                            author = {comment.author}
-                            key = {comment.key}
-                            />
-                        })}
-                        hideMe = {this.closeCommentModal}
-                    />
                     </List>
                 ) : (
                     <h3>No Results to Display</h3>

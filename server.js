@@ -31,10 +31,8 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 //Routes
 //Scrape article's titles and links
 app.get("/scrape", function(req, res){
-    let articleContainer = [];
   request("https://old.reddit.com/r/news/", function(error, response, html){
       let $ = cheerio.load(html);
-      
       const createPromiseArray = [];
       // loop through our titles and push each db create into our 
       // promise array, which we will wait on before sending back a 
@@ -72,9 +70,6 @@ app.get("/articles", function(req, res){
           }
           return unique;
       },[]);
-      // let data = {
-      //     articles: newArticlesOnly
-      // };
       res.json(newArticlesOnly);
   });
 });
